@@ -15,7 +15,14 @@ re-run C<prove> on change.
 
 =head1 SYNOPSIS
 
+  # Watch default directories
   $ prow t/mytest.t
+
+  # Watch just lib/ directory
+  $ prow -w lib t/mytest.t
+
+  # Get debug information
+  $ PROW_DEBUG=1 prow -w lib t/mytest.t
 
 =cut
 

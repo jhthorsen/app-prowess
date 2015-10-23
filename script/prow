@@ -1,0 +1,56 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Filesys::Notify::Simple;
+use constant DEBUG => $ENV{PROW_DEBUG} || 0;
+
+sub parse_argv {
+  my $self = shift;
+  my (@extra, @watch);
+
+  while (defined(my $k = shift @_)) {
+    push @watch, shift if $k eq '-w';
+    push @extra, $k unless $k eq '-w';
+  }
+
+  @watch = grep { -d $_ } qw( bin lib script t xt ) unless @watch;
+
+  warn '[prow] watching ', join(', ', @watch), "\n" if DEBUG;
+  return {extra => \@extra, watch => \@watch};
+}
+
+sub run_prove {
+  my ($self, $args) = @_;
+
+  defined(my $pid = fork) or die "fork: $!";
+  exec prove => @$args unless $pid;
+  warn "[prow] prove @$args ($pid)\n" if DEBUG;
+  return $pid;
+}
+
+sub run {
+  my $self    = shift;
+  my $args    = $self->parse_argv(@_);
+  my $watcher = Filesys::Notify::Simple->new($args->{watch});
+  my $exit    = 0;
+
+  while (1) {
+    my $pid = $self->run_prove($args->{extra});
+    $watcher->wait(sub {
+      return unless my @changed = grep { !-d $_ } map {$_->{path}} @_;
+      warn "[prow] changed: @changed\n" if DEBUG;
+      my $kill = kill TERM => $pid;
+      warn "[prow] kill TERM $pid\n" if DEBUG and $kill;
+      waitpid $pid, 0;
+      $exit = $? >> 8;
+      warn "[prow] prove \$?=$exit\n" if DEBUG;
+    });
+    last if $ENV{PROW_ONCE};
+  }
+
+  return $exit;
+}
+
+my $prow = bless {}, __PACKAGE__;
+exit $prow->run(@ARGV) unless defined wantarray;
+return $prow;
