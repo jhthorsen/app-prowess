@@ -1,3 +1,0 @@
-#!/Users/jhthorsen/.plenv/versions/5.22.0/bin/perl5.22.0
-sleep $ENV{PROW_TEST_SLEEP} if $ENV{PROW_TEST_SLEEP};
-exit;
