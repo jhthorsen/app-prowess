@@ -19,12 +19,12 @@ $SIG{ALRM} = sub {
 };
 
 $ENV{PROWESS_ONCE} = 1;
-ualarm 300e3;
+ualarm 500e3;
 is $prowess->run(qw( -w t -l )), 1, 'run once, $exit=1';
 ok $prove->lib, 'prove -l';
 ok !$prove->verbose, 'prove -l';
 
-ualarm 300e3;
+ualarm 500e3;
 *App::Prove::run = sub { diag 'sleep 3'; sleep 3; return 42 };
 is $prowess->run(qw( -w t -vl )), 0, 'kill running test';
 ok $prove->lib,     'prove -vl';
