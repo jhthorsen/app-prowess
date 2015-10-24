@@ -1,8 +1,8 @@
-package App::prow;
+package App::prowess;
 
 =head1 NAME
 
-App::prow - Watch files for changes and re-run prove
+App::prowess - Watch files for changes and re-run prove
 
 =head1 VERSION
 
@@ -10,19 +10,19 @@ App::prow - Watch files for changes and re-run prove
 
 =head1 DESCRIPTION
 
-L<App::prow> is an application which will watch files for changes and the
+L<App::prowess> is an application which will watch files for changes and the
 re-run C<prove> on change.
 
 =head1 SYNOPSIS
 
   # Watch default directories
-  $ prow t/mytest.t
+  $ prowess t/mytest.t
 
   # Watch just lib/ directory
-  $ prow -w lib t/mytest.t
+  $ prowess -w lib t/mytest.t
 
   # Get debug information
-  $ PROW_DEBUG=1 prow -w lib t/mytest.t
+  $ PROW_DEBUG=1 prowess -w lib t/mytest.t
 
 =cut
 

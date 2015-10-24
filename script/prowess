@@ -15,7 +15,7 @@ sub parse_argv {
 
   @watch = grep { -d $_ } qw( bin lib script t xt ) unless @watch;
 
-  warn '[prow] watching ', join(', ', @watch), "\n" if DEBUG;
+  warn '[prowess] watching ', join(', ', @watch), "\n" if DEBUG;
   return {extra => \@extra, watch => \@watch};
 }
 
@@ -24,7 +24,7 @@ sub run_prove {
 
   defined(my $pid = fork) or die "fork: $!";
   exec prove => @$args unless $pid;
-  warn "[prow] prove @$args ($pid)\n" if DEBUG;
+  warn "[prowess] prove @$args ($pid)\n" if DEBUG;
   return $pid;
 }
 
@@ -38,12 +38,12 @@ sub run {
     my $pid = $self->run_prove($args->{extra});
     $watcher->wait(sub {
       return unless my @changed = grep { !-d $_ } map {$_->{path}} @_;
-      warn "[prow] changed: @changed\n" if DEBUG;
+      warn "[prowess] changed: @changed\n" if DEBUG;
       my $kill = kill TERM => $pid;
-      warn "[prow] kill TERM $pid\n" if DEBUG and $kill;
+      warn "[prowess] kill TERM $pid\n" if DEBUG and $kill;
       waitpid $pid, 0;
       $exit = $? >> 8;
-      warn "[prow] prove \$?=$exit\n" if DEBUG;
+      warn "[prowess] prove \$?=$exit\n" if DEBUG;
     });
     last if $ENV{PROW_ONCE};
   }
@@ -51,6 +51,6 @@ sub run {
   return $exit;
 }
 
-my $prow = bless {}, __PACKAGE__;
-exit $prow->run(@ARGV) unless defined wantarray;
-return $prow;
+my $prowess = bless {}, __PACKAGE__;
+exit $prowess->run(@ARGV) unless defined wantarray;
+return $prowess;
