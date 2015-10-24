@@ -16,13 +16,17 @@ re-run C<prove> on change.
 =head1 SYNOPSIS
 
   # Watch default directories
-  $ prowess t/mytest.t
+  $ prowess -vl t/mytest.t
 
   # Watch just lib/ directory
-  $ prowess -w lib t/mytest.t
+  $ prowess -w lib -l -j6
 
   # Get debug information
   $ PROWESS_DEBUG=1 prowess -w lib t/mytest.t
+
+C<-w> is used to watch directories or files for changes. C<-w> without a
+following path will be passed on to C<prove> as the C<-w> flag.
+Any other option is passed directly to C<prove>.
 
 =head1 SEE ALSO
 

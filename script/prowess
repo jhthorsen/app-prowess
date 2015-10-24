@@ -7,17 +7,21 @@ use constant DEBUG => $ENV{PROWESS_DEBUG} || 0;
 
 sub parse_argv {
   my $self = shift;
-  my (@extra, @watch);
+  my (@prove, @watch);
 
   while (defined(my $k = shift @_)) {
-    push @watch, shift if $k eq '-w';
-    push @extra, $k unless $k eq '-w';
+    if ($k eq '-w' and @_ and -d $_[0]) {
+      push @watch, shift;
+    }
+    else {
+      push @prove, $k;
+    }
   }
 
   @watch = grep { -d $_ } qw( bin lib script t xt ) unless @watch;
 
   warn '[prowess] watching ', join(', ', @watch), "\n" if DEBUG;
-  return {extra => \@extra, watch => \@watch};
+  return {prove => \@prove, watch => \@watch};
 }
 
 sub run_prove {
@@ -39,7 +43,7 @@ sub run {
   my $exit    = 0;
 
   while (1) {
-    my $pid = $self->run_prove($args->{extra});
+    my $pid = $self->run_prove($args->{prove});
     $watcher->wait(
       sub {
         return unless my @changed = grep { !-d $_ } map { $_->{path} } @_;
