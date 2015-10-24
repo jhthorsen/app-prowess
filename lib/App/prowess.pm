@@ -22,7 +22,7 @@ re-run C<prove> on change.
   $ prowess -w lib t/mytest.t
 
   # Get debug information
-  $ PROW_DEBUG=1 prowess -w lib t/mytest.t
+  $ PROWESS_DEBUG=1 prowess -w lib t/mytest.t
 
 =head1 SEE ALSO
 
@@ -33,8 +33,8 @@ L<App::Prove::Watch> is an alternative to C<prowess>. The main difference is:
 =item *
 
 C<prowess> will restart the test run on every file change. This means that
-if the test has not completed, it will be C<kill>ed and restarted. This is
-nice when you have tests that might hang.
+if the test has not completed, C<prove> will be C<kill>ed and restarted. This
+is nice if you have tests that doesn't complete.
 
 =back
 

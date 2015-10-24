@@ -18,7 +18,7 @@ $SIG{ALRM} = sub {
   utime $time, $time, __FILE__;
 };
 
-$ENV{PROW_ONCE} = 1;
+$ENV{PROWESS_ONCE} = 1;
 ualarm 300e3;
 is $prowess->run(qw( -w t -l )), 1, 'run once, $exit=1';
 ok $prove->lib, 'prove -l';

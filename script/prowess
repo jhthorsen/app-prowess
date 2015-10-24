@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use App::Prove;
 use Filesys::Notify::Simple;
-use constant DEBUG => $ENV{PROW_DEBUG} || 0;
+use constant DEBUG => $ENV{PROWESS_DEBUG} || 0;
 
 sub parse_argv {
   my $self = shift;
@@ -51,7 +51,7 @@ sub run {
         warn "[prowess] prove \$?=$exit\n" if DEBUG;
       }
     );
-    last if $ENV{PROW_ONCE};
+    last if $ENV{PROWESS_ONCE};
   }
 
   return $exit;
