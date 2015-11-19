@@ -1,6 +1,6 @@
 Revision history for perl distribution App-prowess
 
-0.02 Not Released
+0.02 2015-11-19T09:31:20+0100
  - Fix 'Time::HiRes::ualarm(): unimplemented in this platform'
 
 0.01 2015-10-24T10:52:43+0200
