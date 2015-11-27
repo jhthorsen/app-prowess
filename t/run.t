@@ -4,12 +4,12 @@ use Time::HiRes ();
 use App::Prove;
 
 plan skip_all => 'ualarm is not implementeed on MSWin32' if $^O eq 'MSWin32';
+plan skip_all => 'Need *nix' unless -x 'script/prowess' and $ENV{PATH};
 
 my $prove;
 *App::Prove::new = sub { $prove = shift->TAP::Object::new(@_) };
 *App::Prove::run = sub { diag 'sleep 0'; return 1 };
 
-plan skip_all => 'Need *nix' unless -x 'script/prowess' and $ENV{PATH};
 my $prowess = do 'script/prowess' or die $@;
 
 $SIG{ALRM} = sub {

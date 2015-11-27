@@ -6,7 +6,7 @@ App::prowess - Watch files for changes and re-run prove
 
 =head1 VERSION
 
-0.02
+0.03
 
 =head1 DESCRIPTION
 
@@ -47,7 +47,7 @@ is nice if you have tests that doesn't complete.
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 COPYRIGHT AND LICENSE
 
