@@ -7,11 +7,14 @@ use constant DEBUG => $ENV{PROWESS_DEBUG} || 0;
 
 sub parse_argv {
   my $self = shift;
-  my (@prove, @watch);
+  my (@prove, @watch, $ignore);
 
   while (defined(my $k = shift @_)) {
     if ($k eq '-w' and @_ and -d $_[0]) {
       push @watch, shift;
+    }
+    elsif ($k eq '-i' and @_) {
+      $ignore = shift;
     }
     else {
       push @prove, $k;
@@ -21,11 +24,14 @@ sub parse_argv {
   @watch = grep { -d $_ } qw( bin lib script t xt ) unless @watch;
 
   warn '[prowess] watching ', join(', ', @watch), "\n" if DEBUG;
-  return {prove => \@prove, watch => \@watch};
+  warn '[prowess] ignoring ', $ignore, "\n" if DEBUG;
+  return {prove => \@prove, watch => \@watch, ignore => $ignore};
 }
 
 sub run_prove {
-  my ($self, $args) = @_;
+  my ($self, $changed, $args) = @_;
+  do { warn "[prowess] no desired changes\n" if DEBUG; } and return unless $changed;
+  return if DEBUG > 1;
   my $prove = App::Prove->new;
 
   $prove->process_args(@$args);
@@ -40,17 +46,21 @@ sub run {
   my $self    = shift;
   my $args    = $self->parse_argv(@_);
   my $watcher = Filesys::Notify::Simple->new($args->{watch});
+  my $ignore  = $args->{ignore} || '^$';
+  $ignore     = qr($ignore);
   my $exit    = 0;
+  my $changed = 1;
 
   while (1) {
-    my $pid = $self->run_prove($args->{prove});
+    my $pid = $self->run_prove($changed, $args->{prove});
     eval {
-# Try to capture:
-# kevent error: Interrupt innerhalb eines Systemaufrufs at /usr/perl5.20.0/lib/site_perl/5.20.0/Filesys/Notify/KQueue.pm line 114.
+      # Try to capture:
+      # kevent error: Interrupt innerhalb eines Systemaufrufs at /usr/perl5.20.0/lib/site_perl/5.20.0/Filesys/Notify/KQueue.pm line 114.
       $watcher->wait(
         sub {
-          return unless my @changed = grep { !-d $_ } map { $_->{path} } @_;
+          return unless my @changed = $changed = grep { !-d $_ && $_ !~ $ignore } map { $_->{path} } @_;
           warn "[prowess] changed: @changed\n" if DEBUG;
+          return if DEBUG > 1;
           my $kill = kill TERM => $pid;
           warn "[prowess] kill TERM $pid\n" if DEBUG and $kill;
           waitpid $pid, 0;
