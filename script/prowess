@@ -40,16 +40,18 @@ sub run {
   my $self    = shift;
   my $args    = $self->parse_argv(@_);
   my $watcher = Filesys::Notify::Simple->new($args->{watch});
+  my $ignore  = qr{(?:/\.[^/]+$|\.bak$|\.old$|\.swp$|~$)};
+  my @changed = (1);
   my $exit    = 0;
 
   while (1) {
-    my $pid = $self->run_prove($args->{prove});
+    my $pid = @changed ? $self->run_prove($args->{prove}) : 0;
     eval {
-# Try to capture:
-# kevent error: Interrupt innerhalb eines Systemaufrufs at /usr/perl5.20.0/lib/site_perl/5.20.0/Filesys/Notify/KQueue.pm line 114.
+      # Try to capture:
+      # kevent error: Interrupt innerhalb eines Systemaufrufs at /usr/perl5.20.0/lib/site_perl/5.20.0/Filesys/Notify/KQueue.pm line 114.
       $watcher->wait(
         sub {
-          return unless my @changed = grep { !-d $_ } map { $_->{path} } @_;
+          return unless @changed = grep { !-d $_ && $_ !~ $ignore } map { $_->{path} } @_;
           warn "[prowess] changed: @changed\n" if DEBUG;
           my $kill = kill TERM => $pid;
           warn "[prowess] kill TERM $pid\n" if DEBUG and $kill;
