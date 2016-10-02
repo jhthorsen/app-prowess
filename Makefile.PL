@@ -16,5 +16,5 @@ WriteMakefile(
   },
   BUILD_REQUIRES => {'Test::More' => '0.88'},
   PREREQ_PM      => {'App::Prove' => '3.35', 'Filesys::Notify::Simple' => '0.12'},
-  test           => {TESTS        => 't/*.t'},
+  test           => {TESTS        => (-e 'META.yml' ? 't/*.t' : 't/*.t xt/*.t')},
 );

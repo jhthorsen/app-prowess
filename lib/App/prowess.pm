@@ -1,4 +1,12 @@
 package App::prowess;
+use strict;
+use warnings;
+
+our $VERSION = '0.04';
+
+1;
+
+=encoding utf8
 
 =head1 NAME
 
@@ -6,7 +14,7 @@ App::prowess - Watch files for changes and re-run prove
 
 =head1 VERSION
 
-0.03
+0.04
 
 =head1 DESCRIPTION
 
@@ -42,13 +50,6 @@ is nice if you have tests that doesn't complete.
 
 =back
 
-=cut
-
-use strict;
-use warnings;
-
-our $VERSION = '0.03';
-
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2014, Jan Henning Thorsen
@@ -60,6 +61,6 @@ the terms of the Artistic License version 2.0.
 
 Jan Henning Thorsen - C<jhthorsen@cpan.org>
 
-=cut
+Stefan Adams - C<stefan@borgia.com>
 
-1;
+=cut

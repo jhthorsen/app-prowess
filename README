@@ -2,7 +2,7 @@ NAME
     App::prowess - Watch files for changes and re-run prove
 
 VERSION
-    0.03
+    0.04
 
 DESCRIPTION
     App::prowess is an application which will watch files for changes and
@@ -38,4 +38,6 @@ COPYRIGHT AND LICENSE
 
 AUTHOR
     Jan Henning Thorsen - "jhthorsen@cpan.org"
+
+    Stefan Adams - "stefan@borgia.com"
 
